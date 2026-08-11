@@ -44,6 +44,9 @@ jobs:
         shell: bash
         run: |
           unzip -o /tmp/overlay.zip -d .
+          # GitHub Actions token cannot modify workflow files. Keep the current CI file here;
+          # the verified v2 CI workflow will be updated afterwards through the GitHub connector.
+          git checkout HEAD -- .github/workflows/health-os-v2-ci.yml
           rm -rf release
           rm -f .github/workflows/apply-health-os-release.yml
 
@@ -58,4 +61,4 @@ jobs:
           git add -A
           git commit -m "Complete Markov Health OS 2.0 production build"
           echo "FINAL_SOURCE_SHA=$(git rev-parse HEAD)"
-          git push --force origin HEAD:refs/heads/agent/health-os-2-production || true
+          git push --force origin HEAD:refs/heads/agent/health-os-2-production
