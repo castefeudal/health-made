@@ -23,6 +23,8 @@ jobs:
       - name: Rebuild and verify release archive
         shell: bash
         run: |
+          wc -c release/.overlay.part*
+          sha256sum release/.overlay.part*
           cat release/.overlay.part* > /tmp/overlay.b64
           base64 -d /tmp/overlay.b64 > /tmp/overlay.zip
           echo "1a9f05f8ec84866a9fabd26f39e004708c81c2ad623e3aade162f94c16b7a6fa  /tmp/overlay.zip" | sha256sum -c -
