@@ -1,5 +1,26 @@
 # Changelog
 
+## 2.0.0-preview — Premium laboratory intelligence layer
+
+- Добавлен расширяемый русскоязычный каталог лабораторных показателей с русскими/английскими алиасами, категориями, единицами и описаниями.
+- LOINC/ФСЛИ mapping не выдумывается: неподтверждённые коды намеренно оставлены пустыми.
+- Добавлен deterministic health engine: нормализация названий, лабораторные статусы, безопасные analyte-specific unit conversions, delta и Pearson correlation с минимальным порогом наблюдений.
+- Добавлена защита от ложной универсальной конверсии (например, Lp(a) mg/dL ↔ nmol/L).
+- Страница анализов получила premium intelligence layer: количество уникальных показателей, выходы за лабораторные референсы, сопоставимые повторные изменения и данные без референсов.
+- Добавлен русскоязычный searchable lab catalog.
+- Добавлен review-first CSV import: данные показываются до записи и сохраняются только после явного подтверждения пользователя.
+- Добавлен AI-ready structured Health Brief: контекст формируется локально, не отправляется внешней модели автоматически и использует принцип `Code computes. AI explains.`.
+- Добавлен строгий контракт AI-response и валидатор структуры.
+- Добавлен premium design layer для light/dark/mobile UI.
+- Service Worker v2 кэширует новые локальные модули для offline shell.
+- Добавлены Node tests и GitHub Actions CI для синтаксиса и критической health-логики.
+
+### Ограничения preview
+
+- Внешний AI provider намеренно не подключён без secure server-side gateway и explicit consent flow.
+- PDF/image OCR pipeline не включён в этот preview; CSV и ручной ввод остаются безопасными production-ready путями ввода.
+- Основной legacy data schema v2 сохранён для backward compatibility; полноценная LabReport/LabResult migration требует отдельной schema v3 migration с backup/rollback QA.
+
 ## 1.1.0 — Final perfection pass
 
 - Canonical source восстановлен из проверенного v1.0 release artifact; устранён release drift между source и ZIP.
