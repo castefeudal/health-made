@@ -23,6 +23,7 @@ jobs:
       - name: Rebuild and verify release archive
         shell: bash
         run: |
+          sha256sum release/.overlay.part09_* release/.overlay.part10_*
           cat \
             release/.overlay.part00 release/.overlay.part01 release/.overlay.part02 release/.overlay.part03 \
             release/.overlay.part04 release/.overlay.part05 release/.overlay.part06 release/.overlay.part07 \
