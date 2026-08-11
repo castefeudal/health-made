@@ -24,7 +24,8 @@ export function emptyState(){
     supplements: [], symptoms: [], goals: [], notes: [],
     settings: {
       theme: 'system', locale: 'ru-RU', modules: {}, lastBackupAt: null,
-      ai: { enabled: false, endpoint: '', providerLabel: '' }
+      ai: { enabled: false, endpoint: '', providerLabel: '' },
+      ocr: { enabled: false, endpoint: '', providerLabel: '' }
     },
     metadata: { migratedFrom: null, migratedAt: null, updatedAt: nowIso() }
   };

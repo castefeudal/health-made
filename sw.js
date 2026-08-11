@@ -1,5 +1,5 @@
 const CACHE='markov-health-os-v2.0.0';
-const SHELL=['./','./index.html','./manifest.webmanifest','./src/catalog/labs.js','./src/v3/styles.css','./src/v3/app.js','./src/v3/schema.js','./src/v3/storage.js','./src/v3/labs.js','./src/v3/importers.js','./src/v3/ai.js','./src/v3/brief.js','./src/v3/analytics.js','./src/v3/ocr.js','./src/v3/crypto.js','./privacy.html','./terms.html','./assets/icon.svg','./assets/icon-192.png','./assets/icon-512.png'];
+const SHELL=['./','./index.html','./manifest.webmanifest','./src/catalog/labs.js','./src/v3/styles.css','./src/v3/app.js','./src/v3/schema.js','./src/v3/storage.js','./src/v3/labs.js','./src/v3/importers.js','./src/v3/ai.js','./src/v3/brief.js','./src/v3/analytics.js','./src/v3/ocr.js','./src/v3/crypto.js','./privacy.html','./terms.html','./assets/markov-health-os.svg','./assets/icon-192.png','./assets/icon-512.png'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(c=>c.addAll(SHELL))));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting();});
