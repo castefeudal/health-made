@@ -3,6 +3,8 @@ name: Apply Health OS release package
 on:
   push:
     branches: ["agent/health-os-2-final"]
+  pull_request:
+    branches: ["main"]
 
 permissions:
   contents: write
@@ -15,6 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: agent/health-os-2-final
           fetch-depth: 0
 
       - name: Rebuild and verify release archive
@@ -41,4 +44,4 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Complete Markov Health OS 2.0 production build"
-          git push
+          git push origin HEAD:agent/health-os-2-final
