@@ -1,29 +1,25 @@
-name: Health OS 2 CI
+name: Health OS v2 quality
 
 on:
   push:
-    branches: ["agent/health-os-2-premium"]
   pull_request:
-    branches: ["main"]
 
 permissions:
   contents: read
 
 jobs:
-  test:
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - name: Syntax check
-        run: |
-          node --check src/catalog/labs.js
-          node --check src/core/health-engine.js
-          node --check src/v2/premium.js
-          node --check app.js
-          node --check sw.js
-      - name: Deterministic engine tests
-        run: node --test tests/health-engine.test.mjs
+          node-version: 22
+      - name: Syntax
+        run: npm run check
+      - name: Static security lint
+        run: npm run lint
+      - name: Unit and integration tests
+        run: npm test
+      - name: Release build invariants
+        run: npm run build
