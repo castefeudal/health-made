@@ -7,21 +7,29 @@
   <meta name="theme-color" content="#f4f6f4">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta name="description" content="Markov Health OS — приватная local-first система для истории здоровья, анализов, восстановления и подготовки к врачу.">
+  <meta name="application-name" content="Markov Health OS">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta property="og:title" content="Markov Health OS">
+  <meta property="og:description" content="Вся история здоровья в одной системе — локально, понятно, без лишнего шума.">
+  <meta property="og:type" content="website">
   <title>Markov Health OS</title>
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="icon" href="./assets/icon-192.png" sizes="192x192">
+  <link rel="icon" href="./assets/markov-health-os.svg" type="image/svg+xml">
+  <link rel="icon" href="./assets/icon-192.png" sizes="192x192" type="image/png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <link rel="stylesheet" href="./src/v3/styles.css">
 </head>
 <body>
   <noscript>Для работы Markov Health OS требуется JavaScript.</noscript>
+  <a class="skip-link" href="#main">Перейти к содержимому</a>
   <div class="shell">
     <aside class="sidebar" aria-label="Основная навигация">
       <a class="brand" href="#dashboard" aria-label="Markov Health OS — обзор">
         <span class="brand-mark" aria-hidden="true">
           <svg viewBox="0 0 32 32"><path d="M6.5 23.5V8.5h4.2l5.3 8.8 5.3-8.8h4.2v15h-4.1v-8.2L16 23.9l-5.4-8.6v8.2H6.5Z"/></svg>
         </span>
-        <span class="brand-copy"><strong>MARKOV</strong><small>HEALTH OS</small></span>
+        <span class="brand-copy"><strong>MARKOV</strong><small>HEALTH OS · YOUR HEALTH, IN CONTEXT</small></span>
       </a>
 
       <div class="profile" aria-label="Активный профиль">
@@ -30,7 +38,7 @@
         <span class="local-chip">LOCAL</span>
       </div>
 
-      <p class="nav-label">РАЗДЕЛЫ</p>
+      <p class="nav-label">СИСТЕМА</p>
       <nav class="nav">
         <a class="nav-link" data-route="dashboard" href="#dashboard">
           <span class="nav-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="2"/><rect x="14" y="3" width="7" height="7" rx="2"/><rect x="3" y="14" width="7" height="7" rx="2"/><rect x="14" y="14" width="7" height="7" rx="2"/></svg></span>
@@ -99,7 +107,7 @@
         <input id="global-search" type="search" placeholder="Раздел, показатель или действие…" autocomplete="off" aria-label="Поиск по Health OS">
         <button id="search-close" class="icon-btn" type="button" aria-label="Закрыть поиск">×</button>
       </div>
-      <div id="search-results" class="search-results"></div>
+      <div id="search-results" class="search-results" role="listbox" aria-label="Результаты поиска"></div>
       <div class="search-hint"><span>↑↓ навигация</span><span>Enter открыть</span><span>Esc закрыть</span></div>
     </div>
   </dialog>

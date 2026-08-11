@@ -7,7 +7,15 @@
   "display": "standalone",
   "background_color": "#f4f6f4",
   "theme_color": "#1f6b5d",
+  "orientation": "any",
+  "categories": ["health", "lifestyle", "productivity"],
   "icons": [
+    {
+      "src": "./assets/markov-health-os.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
     {
       "src": "./assets/icon-192.png",
       "sizes": "192x192",
@@ -17,6 +25,20 @@
       "src": "./assets/icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Добавить запись",
+      "short_name": "Добавить",
+      "url": "./#dashboard?action=quick-add",
+      "icons": [{"src": "./assets/icon-192.png", "sizes": "192x192", "type": "image/png"}]
+    },
+    {
+      "name": "Открыть анализы",
+      "short_name": "Анализы",
+      "url": "./#labs",
+      "icons": [{"src": "./assets/icon-192.png", "sizes": "192x192", "type": "image/png"}]
     }
   ]
 }

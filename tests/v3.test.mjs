@@ -158,3 +158,13 @@ test('dashboard includes non-medical data freshness surface', async()=>{
   assert.ok(app.includes('function dataFreshnessPanel(){'));
   assert.ok(app.includes('Показывает свежесть записей, а не качество здоровья.'));
 });
+
+test('product shell includes local-first onboarding, explicit AI scope and PWA assets',async()=>{
+  const {readFile,access}=await import('node:fs/promises');
+  const html=await readFile(new URL('../index.html',import.meta.url),'utf8');
+  const app=await readFile(new URL('../src/v3/app.js',import.meta.url),'utf8');
+  const manifest=JSON.parse(await readFile(new URL('../manifest.webmanifest',import.meta.url),'utf8'));
+  assert.ok(html.includes('skip-link'));assert.ok(html.includes('og:title'));assert.ok(html.includes('markov-health-os.svg'));
+  assert.ok(app.includes('function aiScopePanel(){'));assert.ok(app.includes('function importStepper('));assert.ok(app.includes('function renderAnalyteEducation('));
+  assert.ok(manifest.shortcuts?.length>=2);await access(new URL('../assets/icon-192.png',import.meta.url));await access(new URL('../assets/icon-512.png',import.meta.url));
+});
