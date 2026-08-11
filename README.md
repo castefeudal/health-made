@@ -1,204 +1,137 @@
-# Markov Health OS 2.0 — Premium Preview
+# Markov Health OS 2.0.0
 
-**Markov Health OS** — local-first персональная система для организации показателей здоровья, физической формы, восстановления, лабораторных анализов, препаратов, симптомов и целей.
+Markov Health OS is a local-first personal health timeline for structured laboratory results, body/recovery data, sleep, training, nutrition, symptoms, medications, supplements, events and goals.
 
-**Product concept & development — Pavel Markov.**
+The product is designed around a temporal model: what happened, what changed, what context overlapped in time, what data is stale or uncertain, and what can be summarized for a clinician.
 
-> Главный принцип: **Code computes. AI explains.** Детерминированные расчёты выполняются приложением; AI не должен подменять точные вычисления, лабораторные референсы или клиническое решение.
+## Core principles
 
-## Что нового в 2.0 preview
+- Local-first structured health data. No account, analytics, trackers or telemetry by default.
+- Laboratory reference intervals are report-specific. The app does not invent a universal medical "normal" range.
+- Original lab values and units are retained after normalization.
+- Unit conversion is analyte-specific and deterministic. Lp(a) mass-to-molar conversion is intentionally unsupported.
+- Automated document extraction is review-first: extract -> review -> user confirmation -> save.
+- `Code computes. AI explains.` Calculations are deterministic; AI receives prepared facts.
+- AI/OCR transmission requires explicit user action and a same-origin gateway. Provider secrets never belong in frontend code.
+- Missing data is not interpreted as poor health.
 
-### Lab Intelligence
+## Markov Health OS 2.0
 
-- Расширяемый русскоязычный каталог распространённых лабораторных показателей.
-- Поиск по русским и английским названиям, сокращениям и алиасам: `ТТГ / TSH`, `ЛПНП / LDL`, `АЛТ / ALT`, `Ферритин` и др.
-- Категории: ОАК, лейкоцитарная формула, биохимия, печень, почки, липиды, углеводный обмен, щитовидная железа, железо, витамины/минералы, воспаление, гормоны, коагулограмма, моча.
-- Неподтверждённые LOINC/ФСЛИ mapping **не выдумываются** и остаются пустыми.
-- Статус результата определяется только относительно референса, сохранённого вместе с конкретным лабораторным результатом.
-- Повторные измерения показывают абсолютную и процентную динамику только при сопоставимых единицах.
-- Analyte-specific unit conversion используется только там, где преобразование однозначно и явно задано.
-- Опасные универсальные преобразования блокируются. Например, `Lp(a) mg/dL ↔ nmol/L` не конвертируется общим коэффициентом.
+### Schema v3
 
-### Premium laboratory dashboard
+Schema v3 introduces first-class `labReports`, `labResults` and `events` while preserving the existing profile-scoped collections. A v2 state is migrated only after a safety copy is written, then validated and read back from storage. Existing v1.1 raw JSON backups are accepted and migrated.
 
-На странице **Анализы** появился верхнеуровневый decision layer:
+### Laboratory workflow
 
-- количество уникальных показателей;
-- число последних значений вне введённого лабораторного референса;
-- количество повторных сопоставимых измерений;
-- показатели без референса;
-- блок «Требует внимания» без диагностической формулировки;
-- блок «Что изменилось» с `Δ` и периодом сравнения.
+- Russian analyte catalog with RU/EN aliases and abbreviations.
+- Report-specific laboratory references.
+- Numeric, qualitative, less-than and greater-than results.
+- Analyte-specific normalization with original values preserved.
+- Manual, CSV and text-layer PDF import.
+- Image/scanned-PDF OCR gateway adapter with explicit consent and manual OCR-text fallback.
+- Mandatory review before imported health data is persisted.
+- Duplicate report detection.
+- Report pages, result edit/delete, report deletion, report comparison and analyte history.
 
-### Review-first CSV import
+### Health timeline and dashboard
 
-CSV можно импортировать без автоматической записи в профиль. Workflow:
+The dashboard is a decision surface rather than a score wall. It shows current metrics, a limited attention list, material changes, data freshness, body/recovery summaries, goals, context events and exploratory correlations with a minimum sample threshold.
 
-`CSV → parsing → preview → пользовательская проверка → явное подтверждение → запись`
+The global timeline combines reports, measurements, sleep, training, symptoms, medications, supplements, events and goals for the active profile.
 
-Поддерживаются колонки:
+### Doctor Brief
 
-```text
-name,value,unit,referenceMin,referenceMax,date,laboratory
-```
+A local Consultation Brief can be generated for a selected period and copied, exported as TXT/JSON or printed/saved as PDF through the browser.
 
-Распознанные данные не сохраняются до подтверждения.
+### AI and OCR
 
-### AI-ready Health Brief
-
-Кнопка **Health AI** формирует локально структурированный контекст выбранного профиля:
-
-- laboratory facts;
-- изменения;
-- measurements;
-- sleep/activity/training;
-- medications/supplements;
-- symptoms;
-- goals;
-- правила безопасности для модели.
-
-Контекст **не отправляется внешней AI-модели автоматически**. Пользователь сначала видит данные и сам решает, копировать ли их во внешний инструмент.
-
-Внешний AI API в preview намеренно не подключён: секретный API key нельзя безопасно хранить в статическом frontend. Production AI требует отдельного server-side/serverless gateway, explicit consent и минимизации передаваемых health-data.
-
-## Текущие возможности core
-
-- Local-first state без обязательного аккаунта или backend.
-- Несколько локальных профилей с изоляцией записей по `profileId`.
-- Onboarding и персонализированный dashboard.
-- Тело: масса, процент жира, талия, resting HR, давление, SpO₂, температура.
-- Сон, активность, тренировки и питание.
-- Анализы, лекарства, добавки, симптомы, цели и заметки.
-- History/Timeline, Quick Add и глобальный поиск (`Ctrl/Cmd + K`).
-- Demo Mode с вымышленными данными.
-- Light / Dark / System themes.
-- JSON backup, import preview и rollback-oriented storage flow.
-- Защищённый `.mhos` backup через PBKDF2-SHA256 + AES-GCM.
-- CSV export.
-- Consultation Brief с Copy/TXT/Print → PDF.
-- Installable PWA и offline application shell.
-
-## Архитектура
-
-Проект остаётся dependency-light и GitHub Pages compatible.
+The static frontend contains no provider API key. Configure same-origin gateway paths in Settings, for example:
 
 ```text
-index.html
-styles.css
-app.js                         # legacy/core application
-src/
-  catalog/
-    labs.js                    # Russian analyte catalog + aliases
-  core/
-    health-engine.js           # deterministic calculations and contracts
-  v2/
-    premium.js                 # v2 integration/UI layer
-    premium.css                # premium design layer
-tests/
-  health-engine.test.mjs
-.github/workflows/
-  health-os-v2-ci.yml
-privacy.html
-terms.html
-manifest.webmanifest
-sw.js
+/api/health-ai
+/api/health-ocr
 ```
 
-### Почему v2 сделан слоем, а не rewrite
+AI requests use a structured context and validated structured response. OCR uploads are never sent unless the user checks the explicit consent control and starts the OCR action.
 
-Текущий core уже содержит рабочие профили, backup/import, PWA, onboarding, history и формы. Preview 2.0 добавляет новый лабораторный и аналитический слой поверх проверенного data model, не выполняя рискованный массовый rewrite и не ломая существующие пользовательские данные.
+Provider deployment and credentials are external activation steps; the core Health OS remains usable without them.
 
-Полная миграция к `LabReport + LabResult` и schema v3 должна выполняться отдельным этапом с migration tests, safety backup и rollback QA.
+## Privacy and storage
 
-## Медицинская модель
+Structured data is stored in the browser under the existing key:
 
-Markov Health OS различает:
+```text
+markovHealthOSData
+```
 
-1. **Исходный результат лаборатории** — значение и исходная единица.
-2. **Лабораторный reference interval** — диапазон из конкретного отчёта.
-3. **Детерминированный расчёт приложения** — delta, normalization и т.п.
-4. **Общую медицинскую информацию** — справочный контекст.
-5. **AI-гипотезу** — только как предположение с ограничениями.
+The schema version is now `3`. The app keeps a safety copy under `markovHealthOSDataSafetyBackup` before migration/restore transactions.
 
-Отсутствие данных не считается плохим здоровьем. Выход за лабораторный референс не является диагнозом.
+JSON backups are portable but unencrypted. `.mhos` backups use PBKDF2-SHA256 and AES-GCM through Web Crypto and remain compatible with the v1.1 `MHOS_ENCRYPTED_BACKUP` envelope.
 
-### Номенклатура и interoperability
+Original uploaded documents are not persisted by default. They are processed for extraction and converted into user-reviewed structured records.
 
-Ориентиры для дальнейшего подтверждённого mapping:
-
-- ФСЛИ / НСИ Минздрава РФ;
-- LOINC;
-- UCUM;
-- HL7 FHIR Observation / DiagnosticReport.
-
-Коды не добавляются «по памяти». Mapping должен быть проверяемым.
-
-## Privacy & security
-
-- Health-data хранятся локально под ключом `markovHealthOSData`.
-- Нет рекламных SDK, tracking pixels или скрытой телеметрии.
-- CSP ограничивает источники ресурсов.
-- Пользовательские строки должны выводиться безопасными DOM API.
-- AI-ready context формируется локально.
-- Service Worker кэширует application shell; он не отправляет записи о здоровье в облако.
-- Secret AI keys в frontend не поддерживаются.
-
-JSON backup остаётся незашифрованным чувствительным файлом. Для защищённой копии используйте `.mhos`.
-
-## Запуск
+## Run locally
 
 ```bash
 python -m http.server 8000
 ```
 
-Затем открыть:
+Open `http://localhost:8000/`.
+
+## Validation
+
+```bash
+npm run qa
+```
+
+`npm run qa` последовательно выполняет syntax check, статический security-lint, unit/integration tests и release build invariants.
+
+The current deterministic suite contains 24 tests covering migration, state integrity, backup compatibility, lab aliases, reference normalization, unit conversion guardrails, CSV/text parsing, upload validation, duplicate detection, AI/OCR same-origin contracts, Doctor Brief section isolation, profile isolation, encrypted backups, checksum tamper detection, CSP-sensitive rendering invariants, Service Worker privacy rules and correlation thresholds. Browser E2E release scenarios are documented in `tests/E2E.md`.
+
+## Project structure
 
 ```text
-http://localhost:8000/
+index.html
+manifest.webmanifest
+sw.js
+src/
+  catalog/labs.js
+  v3/
+    app.js
+    schema.js
+    storage.js
+    labs.js
+    importers.js
+    ai.js
+    ocr.js
+    analytics.js
+    brief.js
+    crypto.js
+    styles.css
+tests/
+  v3.test.mjs
+  E2E.md
+scripts/
+  lint.mjs
+  build-check.mjs
+docs/
+privacy.html
+terms.html
 ```
 
-Или открыть `index.html` напрямую, учитывая ограничения некоторых Browser APIs при `file://`.
+## Important limitations
 
-## Тесты
+- This is an informational personal data tool, not a medical device and not a diagnostic system.
+- The built-in PDF extractor targets accessible text-layer PDFs. Scanned or heavily encoded PDFs require OCR; the gateway adapter is implemented, but an OCR service must be deployed/configured to invoke an external OCR provider.
+- AI provider invocation requires a deployed same-origin gateway and server-side provider credentials.
+- Correlations are exploratory observations and do not establish causation.
 
-Node.js 22+:
+## Release
 
-```bash
-node --test tests/health-engine.test.mjs
-```
+- Application: **2.0.0**
+- Data schema: **3**
+- Service Worker cache: **markov-health-os-v2.0.0**
 
-CI дополнительно запускает syntax checks:
+`RELEASE-MANIFEST.sha256` verifies every file supplied by the 2.0.0 working-tree overlay. Files intentionally inherited unchanged from the merged v2 baseline (for example the existing base analyte catalog, legacy legal stylesheet and binary icons) remain protected by Git history and are not replaced by the overlay.
 
-```bash
-node --check src/catalog/labs.js
-node --check src/core/health-engine.js
-node --check src/v2/premium.js
-node --check app.js
-node --check sw.js
-```
-
-## Ограничения 2.0 preview
-
-- Нет server-side AI gateway и автоматической отправки данных модели.
-- PDF/image OCR пока не реализован: это требует отдельного review-first extraction pipeline.
-- Legacy structured storage остаётся в `localStorage`; переход к IndexedDB имеет смысл вместе с документами/OCR и schema v3, а не ради технологии как таковой.
-- Не реализован собственный лекарственный interaction checker без надёжного медицинского источника данных.
-- Health OS не является медицинским изделием и не предназначен для диагностики, назначения лечения или экстренной помощи.
-
-## Backup и совместимость
-
-Data schema core остаётся **v2**, чтобы существующие данные продолжали открываться без destructive migration. Перед будущей schema v3 миграцией обязательны:
-
-- safety backup;
-- deterministic migration;
-- duplicate/orphan validation;
-- rollback;
-- migration tests.
-
-## PWA
-
-`sw.js` использует cache `markov-health-os-v2.0.0-premium` и включает новые локальные v2 assets. Основные локальные функции продолжают работать offline; внешний AI в будущей версии должен корректно деградировать без сети.
-
-## License
-
-MIT License. См. `LICENSE`.
+Product concept & development: Pavel Markov.

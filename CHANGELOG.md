@@ -1,53 +1,53 @@
 # Changelog
 
-## 2.0.0-preview — Premium laboratory intelligence layer
+## 2.0.0 - Production health timeline architecture
 
-- Добавлен расширяемый русскоязычный каталог лабораторных показателей с русскими/английскими алиасами, категориями, единицами и описаниями.
-- LOINC/ФСЛИ mapping не выдумывается: неподтверждённые коды намеренно оставлены пустыми.
-- Добавлен deterministic health engine: нормализация названий, лабораторные статусы, безопасные analyte-specific unit conversions, delta и Pearson correlation с минимальным порогом наблюдений.
-- Добавлена защита от ложной универсальной конверсии (например, Lp(a) mg/dL ↔ nmol/L).
-- Страница анализов получила premium intelligence layer: количество уникальных показателей, выходы за лабораторные референсы, сопоставимые повторные изменения и данные без референсов.
-- Добавлен русскоязычный searchable lab catalog.
-- Добавлен review-first CSV import: данные показываются до записи и сохраняются только после явного подтверждения пользователя.
-- Добавлен AI-ready structured Health Brief: контекст формируется локально, не отправляется внешней модели автоматически и использует принцип `Code computes. AI explains.`.
-- Добавлен строгий контракт AI-response и валидатор структуры.
-- Добавлен premium design layer для light/dark/mobile UI.
-- Service Worker v2 кэширует новые локальные модули для offline shell.
-- Добавлены Node tests и GitHub Actions CI для синтаксиса и критической health-логики.
+### Data integrity
+- Added schema v3 with `labReports`, `labResults` and `events`.
+- Added v2 -> v3 migration with pre-migration safety copy, validation and storage read-back verification.
+- Added compatibility with legacy v1.1 raw JSON backup payloads.
+- Preserved profile isolation and original migrated lab records in provenance.
 
-### Ограничения preview
+### Labs
+- Added first-class laboratory reports/results and provenance.
+- Expanded Russian analyte catalog coverage while keeping unverified LOINC/FSLI mappings empty.
+- Added analyte-specific unit normalization and converted reference ranges when values are normalized.
+- Preserved original values, units and original references.
+- Kept Lp(a) mass/molar universal conversion intentionally unsupported.
+- Added review-first manual/CSV/PDF import, OCR adapter, duplicate detection, report comparison, analyte history and result management.
 
-- Внешний AI provider намеренно не подключён без secure server-side gateway и explicit consent flow.
-- PDF/image OCR pipeline не включён в этот preview; CSV и ручной ввод остаются безопасными production-ready путями ввода.
-- Основной legacy data schema v2 сохранён для backward compatibility; полноценная LabReport/LabResult migration требует отдельной schema v3 migration с backup/rollback QA.
+### Health model
+- Added context events and a unified timeline.
+- Added body/recovery summary metrics, calculated BMI/waist-to-height labels, sleep summaries and exploratory correlation UI.
+- Added broader Quick Add support for body, BP, sleep, symptoms, events, training, medications, supplements, nutrition, notes and goals.
+- Added multiple-profile switching, cascade-safe profile deletion and isolated demo data.
 
-## 1.1.0 — Final perfection pass
+### AI / OCR
+- Added same-origin AI and OCR gateway adapters with explicit consent.
+- Added context minimization and structured AI response validation.
+- Provider secrets remain server-side; the local core has no dependency on AI/OCR availability.
 
-- Canonical source восстановлен из проверенного v1.0 release artifact; устранён release drift между source и ZIP.
-- Расширена персонализация для всех основных приоритетов и персонализированы веса качества данных.
-- Health Score и качество данных получили прозрачные компоненты и объяснение формулы.
-- «Что изменилось» теперь явно показывает период и метод сравнения.
-- Поиск получил строгий ranking exact → prefix → title substring → detail substring и русские типы результатов.
-- Canvas-графики поддерживают devicePixelRatio до 3 для более чёткого Retina-рендеринга.
-- Усилены backup UX, Import preview и предупреждения о незашифрованном JSON / невосстанавливаемом пароле `.mhos`.
-- PWA обновляется по явному действию пользователя; Service Worker использует versioned cache v1.1.0.
-- Улучшены navigation ARIA, русскоязычная консистентность интерфейса и maintainability `app.js`.
-- Финально синхронизированы Welcome/Privacy/Terms с реальной моделью JSON и защищённых `.mhos` резервных копий.
+### Backup / privacy / security
+- Restored encrypted `.mhos` export/import using the existing `MHOS_ENCRYPTED_BACKUP` envelope with PBKDF2-SHA256 + AES-GCM.
+- Added optional SHA-256 backup checksum metadata.
+- Hardened upload extension/MIME/size validation.
+- Removed inline event handlers and generic dynamic `innerHTML` rendering from the v3 shell.
+- Service Worker bypasses API/AI requests and uses explicit update confirmation.
 
-## 1.0.0 — Initial public release
+### UI / accessibility
+- Rebuilt the primary shell as a premium clinical-neutral decision interface with a stronger information hierarchy, quieter surfaces and higher-density analytical layouts.
+- Added persistent global Quick Add on desktop and mobile so frequent health entries are available from every core screen.
+- Added mobile search access, icon-based navigation, local-first privacy status and clearer profile context.
+- Added a dedicated non-medical data freshness surface on the dashboard; freshness is explicitly separated from health quality.
+- Completed Russian UI copy across dashboard analytics, correlations, settings, review flows and AI response sections.
+- Added full light/dark tokens, mobile bottom navigation, 44px primary controls, reduced-motion support and text descriptions for analytical visualizations.
 
-- Local-first персональные health-профили и изоляция записей по `profileId`.
-- Пошаговый onboarding и персонализированный dashboard.
-- Health Snapshot, What Changed, Today, deterministic Insights, Health Score и Data Quality.
-- Тело, сон, активность, тренировки, питание, анализы, лекарства, добавки, симптомы, цели и заметки.
-- Timeline, Quick Add, поиск и responsive mobile navigation.
-- Demo Mode с изолированными вымышленными данными.
-- Transactional localStorage writes с rollback при ошибке сохранения.
-- Data schema v2 и migration pipeline.
-- Strict backup validation, import preview и safety rollback.
-- JSON backup и защищённый `.mhos` backup через Web Crypto API.
-- CSV export.
-- Health Brief и Consultation Brief с Print / Save as PDF.
-- Light / Dark / System themes и отключаемые модули.
-- PWA manifest и offline application shell.
-- CSP, reduced-motion support, keyboard/focus improvements и accessibility hardening.
+### Quality
+- Added zero-dependency Node tests for critical domain logic and compatibility paths.
+- Added syntax checks, static security lint, release build invariants and CI workflow.
+- Expanded deterministic coverage to 24 tests, including OCR same-origin boundaries, Doctor Brief section isolation and backup tamper detection.
+- Added an explicit browser E2E release matrix for environments where a browser runner is unavailable.
+
+## 1.1.0
+
+Previous production release and Health OS 2.0 laboratory foundation.
