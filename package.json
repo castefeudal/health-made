@@ -1,0 +1,13 @@
+{
+  "name": "markov-health-os",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check src/v3/schema.js && node --check src/v3/storage.js && node --check src/v3/labs.js && node --check src/v3/importers.js && node --check src/v3/ai.js && node --check src/v3/brief.js && node --check src/v3/crypto.js && node --check src/v3/ocr.js && node --check src/v3/analytics.js && node --check src/v3/app.js",
+    "lint": "node scripts/lint.mjs",
+    "build": "node scripts/build-check.mjs",
+    "qa": "npm run check && npm run lint && npm test && npm run build"
+  }
+}
