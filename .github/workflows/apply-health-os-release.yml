@@ -23,7 +23,6 @@ jobs:
       - name: Rebuild and verify release archive
         shell: bash
         run: |
-          sha256sum release/.overlay.part09_* release/.overlay.part10_*
           cat \
             release/.overlay.part00 release/.overlay.part01 release/.overlay.part02 release/.overlay.part03 \
             release/.overlay.part04 release/.overlay.part05 release/.overlay.part06 release/.overlay.part07 \
@@ -51,11 +50,11 @@ jobs:
       - name: Validate production release
         run: npm run qa
 
-      - name: Commit expanded release
+      - name: Publish clean production branch
         shell: bash
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "Complete Markov Health OS 2.0 production build"
-          git push origin HEAD:agent/health-os-2-final
+          git push --force origin HEAD:refs/heads/agent/health-os-2-production
