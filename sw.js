@@ -1,12 +1,16 @@
 'use strict';
 
-const CACHE = 'markov-health-os-v1.1.0';
+const CACHE = 'markov-health-os-v2.0.0-premium';
 const OFFLINE_INDEX = new URL('./index.html', self.registration.scope).href;
 const APP_SHELL = [
   './',
   './index.html',
   './styles.css',
   './app.js',
+  './src/v2/premium.css',
+  './src/catalog/labs.js',
+  './src/core/health-engine.js',
+  './src/v2/premium.js',
   './privacy.html',
   './terms.html',
   './manifest.webmanifest',
@@ -35,7 +39,6 @@ self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
   const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
-
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
@@ -46,25 +49,18 @@ self.addEventListener('fetch', event => {
           }
           return response;
         })
-        .catch(async () => (
-          await caches.match(event.request)
-          || await caches.match(OFFLINE_INDEX)
-          || Response.error()
-        ))
+        .catch(async () => (await caches.match(event.request) || await caches.match(OFFLINE_INDEX) || Response.error()))
     );
     return;
   }
-
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(async response => {
-        if (response.ok) {
-          const copy = response.clone();
-          await caches.open(CACHE).then(cache => cache.put(event.request, copy));
-        }
-        return response;
-      });
-    })
-  );
+  event.respondWith(caches.match(event.request).then(cached => {
+    if (cached) return cached;
+    return fetch(event.request).then(async response => {
+      if (response.ok) {
+        const copy = response.clone();
+        await caches.open(CACHE).then(cache => cache.put(event.request, copy));
+      }
+      return response;
+    });
+  }));
 });
